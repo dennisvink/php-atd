@@ -9,8 +9,8 @@ class AtD {
 	var $url;
 	var $apikey;
 
-	function __construct ($host = '127.0.0.1', $port = '1049', $apikey = 'PHP-AtD') {
-		$this->url = 'http://' . $host . ':' . $port . '/';
+	function __construct ($host = '127.0.0.1', $port = '1049', $ssl = false, $apikey = 'PHP-AtD') {
+		$this->url = (($ssl) ? 'https://' : 'http://') . $host . ':' . $port . '/';
 		$this->apikey = $apikey;
 	}
 
@@ -32,6 +32,10 @@ class AtD {
 		curl_setopt($ch, CURLOPT_POST, 2);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, 'key=' . $this->apikey . '&data=' . urlencode($data));
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 90);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		$response = new SimpleXMLElement(curl_exec($ch));
 		return($this->_xml2a($response));
 	}
