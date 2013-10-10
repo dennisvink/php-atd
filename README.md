@@ -1,4 +1,4 @@
 php-atd
 =======
 
-PHP class to interface with After the Deadline (AtD) servers
+PHP class to interface with After the Deadline (AtD) servers.
