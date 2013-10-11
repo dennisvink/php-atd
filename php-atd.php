@@ -9,21 +9,16 @@ class AtD {
 	var $url;
 	var $apikey;
 
-	function __construct ($host = '127.0.0.1', $port = '1049', $ssl = false, $apikey = 'PHP-AtD') {
+	function __construct ($host = '127.0.0.1', $port = '1049', $apikey = 'PHP-AtD', $ssl = false) {
 		$this->url = (($ssl) ? 'https://' : 'http://') . $host . ':' . $port . '/';
 		$this->apikey = $apikey;
 	}
 
-	private function _xml2a (SimpleXMLElement $parent) {
-		$array = array();
-		foreach ($parent as $name => $element) {
-			($node = & $array[$name])
-				&& (1 === count($node) ? $node = array($node) : 1)
-				&& $node = & $node[];
-
-			$node = $element->count() ? $this->_xml2a($element) : trim($element);
+	private function _xml2a ($parent, $out = Array()) {
+		foreach ( (array) $parent as $index => $node ) {
+			$out[$index] = ( is_object ( $node ) ) ? $this->_xml2a ( $node ) : $node;
 		}
-		return $array;
+		return $out;
 	}
 
 	private function _atd ($query, $data) {
@@ -50,10 +45,16 @@ class AtD {
 }
 
 /*
- ; Sample code:
- ; $atd = new AtD();
- ; print_r($atd->checkDocument('This iz a sample text wit, errorz to check.'));
- ; print_r($atd->checkGrammar('This iz a sample text wit, errorz to check.'));
-*/
+ ; // Sample code:
+ ; $atd = new AtD();	// Parameters are optional, by default it will look for an AtD server running locally.
+ ;						// Optional parameters: AtD($host, $port, $apikey, $ssl)
+ ;
+ ; $result1 = $atd->checkDocument('This iz a sample text wit, errorz to check.');
+ ; $result2 = $atd->checkGrammar('This iz a sample text wit, errorz to check.');
+ ;
+ ; print_r($result1);
+ ; print_r($result2);
+ ;
+ */
 
 ?>
